@@ -35,6 +35,24 @@ app.post('/api/chat', async (req, res) => {
     }
 
 });
+app.post('/api/chat-with-system', async (req, res) => {
+    const { systemMessage, userMessage } = req.body;
+    if (!systemMessage || !userMessage) {
+        return res.status(400).json({ error: 'System message and user message are required' });
+    }   
+    const fullMessage= systemMessage ? `${systemMessage}\nUser: ${userMessage}` : userMessage;
+    try {
+        const result = await model.generateContent(fullMessage);
+        const text = result.response.text();
+        return res.json({ text });
+    } catch (error) {
+        console.error('Error generating content:', error);
+        return res.status(500).json({ error: 'Failed to generate content' });
+
+        
+    }
+})
+app.post('/api/chat-conversation', async (req, res) => {})
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
