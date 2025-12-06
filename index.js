@@ -39,8 +39,8 @@ app.post('/api/chat-with-system', async (req, res) => {
     const { systemMessage, userMessage } = req.body;
     if (!systemMessage || !userMessage) {
         return res.status(400).json({ error: 'System message and user message are required' });
-    }   
-    const fullMessage= systemMessage ? `${systemMessage}\nUser: ${userMessage}` : userMessage;
+    }
+    const fullMessage = systemMessage ? `${systemMessage}\nUser: ${userMessage}` : userMessage;
     try {
         const result = await model.generateContent(fullMessage);
         const text = result.response.text();
@@ -49,10 +49,41 @@ app.post('/api/chat-with-system', async (req, res) => {
         console.error('Error generating content:', error);
         return res.status(500).json({ error: 'Failed to generate content' });
 
-        
+
     }
 })
-app.post('/api/chat-conversation', async (req, res) => {})
+// app.post('/api/chat-conversation', async (req, res) => {
+//     try {
+//         const { message, history } = req.body;
+
+//         if (!message) {
+//             return res.status(400).json({ error: 'Message is required' });
+//         }
+
+//         const chat = model.startChat({
+//             history: history || [],
+//             generationConfig: {
+//                 maxOutputTokens: 1000,
+//             },
+//         });
+
+//         const result = await chat.sendMessage(message);
+//         const text = result.response.text();
+
+//         res.json({
+//             success: true,
+//             response: text,
+//             history: await chat.getHistory()
+//         });
+
+//     } catch (error) {
+//         console.error('Error:', error);
+//         res.status(500).json({
+//             success: false,
+//             error: 'Failed to get response from Gemini'
+//         });
+//     }
+// });
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
